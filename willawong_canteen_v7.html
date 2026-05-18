@@ -1,0 +1,868 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --navy:#1B2B5E;--navy-dark:#142247;--navy-light:#2d4a96;
+  --gold:#E8B84B;--green:#1D9E75;--green-t:#27500A;--green-bg:#EAF3DE;
+  --amber-t:#633806;--amber-bg:#FAEEDA;--red:#A32D2D;--red-t:#791F1F;--red-bg:#FCEBEB;
+  --cc:['#378ADD','#1D9E75','#E8B84B','#D85A30','#7F77DD','#D4537E','#63B3ED','#68D391','#F6AD55','#FC8181'];
+}
+body{font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;color:#1a1a1a;background:#e8e7e3;min-height:100vh;}
+.app{max-width:960px;margin:0 auto;padding:1.25rem 1rem 3rem;}
+
+/* ── HEADER ── */
+.header{background:linear-gradient(135deg,#1B2B5E 0%,#2d4a96 100%);border-radius:14px;padding:1.4rem 1.75rem;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;box-shadow:0 4px 20px rgba(27,43,94,0.25);}
+.header h1{font-size:20px;font-weight:700;color:#fff;letter-spacing:-0.01em;}
+.header p{font-size:12px;color:rgba(255,255,255,0.6);margin-top:2px;}
+.header-week{font-size:12px;color:rgba(255,255,255,0.5);background:rgba(255,255,255,0.1);padding:4px 12px;border-radius:20px;}
+
+/* ── NAV ── */
+.nav{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:1.25rem;}
+.nav-btn{background:#fff;border:1.5px solid #d4d3cf;padding:0.65rem 0.5rem;font-size:13px;font-weight:600;color:#555;cursor:pointer;border-radius:10px;display:flex;align-items:center;justify-content:center;gap:6px;transition:all 0.18s;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.07);}
+.nav-btn:hover{border-color:#1B2B5E;color:#1B2B5E;background:#f0f3fb;box-shadow:0 2px 8px rgba(27,43,94,0.12);}
+.nav-btn.active{background:linear-gradient(135deg,#1B2B5E,#2d4a96);color:#fff;border-color:transparent;box-shadow:0 3px 12px rgba(27,43,94,0.3);}
+.nav-btn i{font-size:16px;}
+
+/* ── PAGES ── */
+.page{display:none;}.page.active{display:block;}
+
+/* ── CARD ── */
+.card{background:#fff;border:1px solid #e2e1dd;border-radius:12px;padding:1.25rem;margin-bottom:1rem;box-shadow:0 1px 4px rgba(0,0,0,0.05);}
+.stitle{font-size:10.5px;font-weight:700;letter-spacing:0.09em;text-transform:uppercase;color:#999;margin-bottom:0.8rem;}
+
+/* ── METRICS ── */
+.metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1rem;}
+.metric{background:#fff;border-radius:12px;padding:1rem 1.1rem;border:1px solid #e2e1dd;box-shadow:0 1px 4px rgba(0,0,0,0.05);}
+.metric .ml{font-size:11px;color:#999;margin-bottom:5px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;}
+.metric .mv{font-size:22px;font-weight:700;color:#1a1a1a;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
+
+/* ── INPUT ROWS ── */
+.irow{display:flex;justify-content:space-between;align-items:center;padding:0.48rem 0;border-bottom:1px solid #f0efeb;}
+.irow:last-child{border-bottom:none;}
+.irow label{font-size:13px;color:#333;display:flex;align-items:center;gap:6px;}
+.irow input{width:115px;text-align:right;padding:5px 9px;font-size:13px;border:1px solid #d4d3cf;border-radius:8px;background:#fafaf9;color:#1a1a1a;outline:none;transition:border-color 0.15s;}
+.irow input:focus{border-color:#1B2B5E;background:#fff;}
+
+/* ── SUMMARY BAR ── */
+.summary-bar{background:linear-gradient(135deg,#1B2B5E,#2d4a96);border-radius:12px;padding:1.1rem 1.4rem;margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;box-shadow:0 3px 12px rgba(27,43,94,0.2);}
+.summary-stats{display:flex;gap:2rem;flex-wrap:wrap;}
+.summary-stat .sl{font-size:10px;color:rgba(255,255,255,0.6);font-weight:600;text-transform:uppercase;letter-spacing:0.06em;}
+.summary-stat .sv{font-size:20px;font-weight:700;color:#fff;}
+.summary-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.summary-actions label{font-size:12px;color:rgba(255,255,255,0.7);}
+.summary-actions input[type="date"]{font-size:12px;padding:5px 9px;border:1.5px solid rgba(255,255,255,0.3);border-radius:8px;background:rgba(255,255,255,0.15);color:#fff;outline:none;cursor:pointer;}
+.summary-actions input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(1);}
+
+/* ── BUTTONS ── */
+.btn-primary{background:linear-gradient(135deg,#E8B84B,#d4a43e);color:#1B2B5E;border:none;padding:0.55rem 1.2rem;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all 0.15s;box-shadow:0 2px 8px rgba(232,184,75,0.35);}
+.btn-primary:hover{filter:brightness(1.05);box-shadow:0 3px 12px rgba(232,184,75,0.5);}
+.btn-secondary{background:#fff;border:1.5px solid #d4d3cf;color:#555;padding:0.48rem 0.85rem;border-radius:8px;font-size:12px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all 0.15s;}
+.btn-secondary:hover{border-color:#1B2B5E;color:#1B2B5E;background:#f0f3fb;}
+.btn-icon{background:none;border:none;color:#bbb;cursor:pointer;padding:4px 6px;border-radius:6px;font-size:15px;line-height:1;display:inline-flex;align-items:center;transition:all 0.15s;}
+.btn-icon:hover{color:#A32D2D;background:#FCEBEB;}
+.btn-icon.small{font-size:13px;padding:3px 5px;}
+
+/* ── TABS ── */
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem;}
+.ctab{background:#fff;border:1.5px solid #d4d3cf;border-radius:20px;padding:4px 14px;font-size:12px;cursor:pointer;color:#666;font-weight:500;transition:all 0.15s;}
+.ctab:hover{border-color:#1B2B5E;color:#1B2B5E;}
+.ctab.active{background:#1B2B5E;color:#fff;border-color:#1B2B5E;font-weight:600;}
+
+/* ── MODE SWITCHER ── */
+.mode-tabs{display:flex;background:#f0efeb;border-radius:10px;padding:3px;gap:3px;margin-bottom:1.1rem;border:1px solid #e2e1dd;}
+.wm-tab{flex:1;background:none;border:none;padding:0.5rem 0.75rem;font-size:12.5px;font-weight:600;color:#888;cursor:pointer;border-radius:8px;transition:all 0.15s;display:flex;align-items:center;justify-content:center;gap:6px;}
+.wm-tab:hover{color:#1B2B5E;}
+.wm-tab.active{background:#fff;color:#1B2B5E;box-shadow:0 1px 4px rgba(0,0,0,0.12);}
+
+/* ── MENU TABLE ── */
+.mtable{width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed;}
+.mtable th{text-align:left;font-weight:700;font-size:10px;color:#999;padding:6px 8px;border-bottom:1px solid #f0efeb;text-transform:uppercase;letter-spacing:0.07em;}
+.mtable td{padding:6px 8px;border-bottom:1px solid #f0efeb;vertical-align:middle;}
+.mtable tr:last-child td{border-bottom:none;}
+.mtable tr:hover td{background:#fafaf9;}
+.cinput{width:100%;padding:3px 6px;font-size:12px;border:1px solid transparent;border-radius:6px;background:transparent;color:#1a1a1a;outline:none;transition:all 0.12s;}
+.cinput:focus{border-color:#d4d3cf;background:#fafaf9;}
+.cinput.num{text-align:right;}
+
+/* ── BADGES ── */
+.badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:700;}
+.bg{background:#EAF3DE;color:#27500A;}.bo{background:#FAEEDA;color:#633806;}.br{background:#FCEBEB;color:#791F1F;}.bx{background:#f0efeb;color:#999;font-weight:500;}
+
+/* ── COST BARS ── */
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.bar-label{font-size:11.5px;color:#666;width:90px;flex-shrink:0;text-align:right;}
+.bar-track{flex:1;background:#f0efeb;border-radius:4px;height:14px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:4px;transition:width 0.4s ease;}
+.bar-pct{font-size:11.5px;font-weight:700;width:38px;flex-shrink:0;color:#666;}
+
+/* ── DAILY TABLE ── */
+.daily-table{width:100%;border-collapse:collapse;font-size:12.5px;}
+.daily-table th{font-size:10px;font-weight:700;color:#999;padding:6px 7px;border-bottom:1px solid #f0efeb;text-align:right;text-transform:uppercase;letter-spacing:0.06em;white-space:nowrap;}
+.daily-table th:first-child{text-align:left;}
+.daily-table td{padding:5px 7px;border-bottom:1px solid #f0efeb;text-align:right;vertical-align:middle;}
+.daily-table td:first-child{text-align:left;font-weight:600;color:#1a1a1a;}
+.daily-table tr:last-child td{border-bottom:none;}
+.daily-table tr.total-row td{background:#f7f6f2;font-weight:700;font-size:12px;border-top:1.5px solid #e2e1dd;}
+.daily-table input{width:76px;text-align:right;padding:4px 6px;font-size:12px;border:1px solid #d4d3cf;border-radius:6px;background:#fafaf9;color:#1a1a1a;outline:none;transition:border-color 0.12s;}
+.daily-table input:focus{border-color:#1B2B5E;background:#fff;}
+
+/* ── DAY PILLS ── */
+.day-pills-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem;}
+.day-pill{background:#fff;border:1.5px solid #e2e1dd;border-radius:10px;padding:8px 14px;font-size:12px;display:flex;flex-direction:column;align-items:center;min-width:82px;box-shadow:0 1px 3px rgba(0,0,0,0.05);}
+.dp-day{font-size:9.5px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:0.07em;}
+.dp-rev{font-size:14px;font-weight:700;color:#1a1a1a;margin:2px 0;}
+.dp-profit{font-size:11px;font-weight:600;}
+
+/* ── COSTS SECTION ── */
+.costs-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.8rem;}
+.cost-row-item{display:flex;align-items:center;gap:6px;padding:0.42rem 0;border-bottom:1px solid #f0efeb;}
+.cost-row-item:last-child{border-bottom:none;}
+.cost-row-label{flex:1;font-size:13px;color:#333;display:flex;align-items:center;gap:6px;}
+.cost-row-label input[type="text"]{flex:1;font-size:13px;padding:3px 6px;border:1px solid transparent;border-radius:6px;background:transparent;color:#333;outline:none;}
+.cost-row-label input[type="text"]:focus{border-color:#d4d3cf;background:#fafaf9;}
+.cost-row-val input{width:115px;text-align:right;padding:5px 9px;font-size:13px;border:1px solid #d4d3cf;border-radius:8px;background:#fafaf9;color:#1a1a1a;outline:none;transition:border-color 0.15s;}
+.cost-row-val input:focus{border-color:#1B2B5E;background:#fff;}
+
+/* ── HISTORY TABLE ── */
+.htable{width:100%;border-collapse:collapse;font-size:12px;}
+.htable th{font-size:10px;font-weight:700;color:#999;padding:6px 8px;border-bottom:1px solid #f0efeb;text-align:right;text-transform:uppercase;letter-spacing:0.05em;}
+.htable th:first-child{text-align:left;}
+.htable td{padding:7px 8px;border-bottom:1px solid #f0efeb;text-align:right;}
+.htable td:first-child{text-align:left;}
+.htable tr:hover td{background:#fafaf9;}
+
+/* ── CONFIRM BAR ── */
+.confirm-bar{display:flex;align-items:center;gap:10px;background:#FCEBEB;border:1px solid rgba(163,45,45,0.2);border-radius:8px;padding:8px 12px;font-size:12px;color:#791F1F;margin:4px 0;}
+.confirm-bar span{flex:1;}
+.cb-yes{background:#A32D2D;color:#fff;border:none;padding:4px 12px;font-size:12px;font-weight:600;border-radius:6px;cursor:pointer;}
+.cb-no{background:none;border:1px solid #A32D2D;color:#791F1F;padding:4px 10px;font-size:12px;border-radius:6px;cursor:pointer;}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:9999;padding:1rem;}
+.modal{background:#fff;border-radius:14px;border:1px solid #e2e1dd;padding:1.5rem;width:100%;max-width:420px;max-height:88vh;overflow-y:auto;box-shadow:0 12px 40px rgba(0,0,0,0.2);}
+.modal h3{font-size:16px;font-weight:700;margin-bottom:1rem;color:#1a1a1a;}
+.mfield{margin-top:12px;}
+.mfield label{font-size:12px;color:#666;display:block;margin-bottom:4px;font-weight:600;}
+.mfield input,.mfield select{width:100%;padding:7px 10px;font-size:13px;border:1.5px solid #d4d3cf;border-radius:8px;background:#fafaf9;color:#1a1a1a;outline:none;transition:border-color 0.15s;}
+.mfield input:focus,.mfield select:focus{border-color:#1B2B5E;background:#fff;}
+.modal-btns{display:flex;gap:8px;margin-top:1.25rem;justify-content:flex-end;}
+.modal-btns .bcancel{background:none;border:1.5px solid #d4d3cf;color:#666;padding:0.48rem 1rem;font-size:13px;border-radius:8px;cursor:pointer;}
+.modal-btns .bconfirm{background:#1B2B5E;color:#fff;border:none;padding:0.48rem 1rem;font-size:13px;font-weight:600;border-radius:8px;cursor:pointer;}
+.modal-btns .bconfirm:hover{background:#142247;}
+.err-msg{font-size:12px;color:#A32D2D;margin-top:8px;min-height:16px;}
+.cat-manage-row{display:flex;align-items:center;gap:8px;padding:0.5rem 0;border-bottom:1px solid #f0efeb;}
+.cat-manage-row:last-child{border-bottom:none;}
+.cat-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.cat-name-input{flex:1;padding:5px 9px;font-size:13px;border:1.5px solid #d4d3cf;border-radius:8px;background:#fafaf9;color:#1a1a1a;outline:none;}
+.cat-name-input:focus{border-color:#1B2B5E;}
+.new-cat-row{margin-top:12px;display:flex;gap:8px;}
+.new-cat-row input{flex:1;padding:7px 10px;font-size:13px;border:1.5px solid #d4d3cf;border-radius:8px;background:#fafaf9;color:#1a1a1a;outline:none;}
+.new-cat-row input:focus{border-color:#1B2B5E;}
+
+/* ── LEGEND & MISC ── */
+.legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;font-size:11px;color:#666;}
+.legend span{display:flex;align-items:center;gap:4px;}
+.ldot{width:10px;height:10px;border-radius:2px;display:inline-block;}
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:linear-gradient(135deg,#1B2B5E,#2d4a96);color:#fff;padding:0.75rem 1.25rem;border-radius:12px;font-size:13px;font-weight:600;z-index:9999;box-shadow:0 6px 20px rgba(27,43,94,0.35);display:flex;align-items:center;gap:8px;animation:slideUp 0.25s ease;}
+@keyframes slideUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+.section-divider{height:1px;background:#f0efeb;margin:0.75rem 0;}
+@media(max-width:600px){.metric-grid{grid-template-columns:repeat(2,1fr);}.grid2{grid-template-columns:1fr;}.nav-btn span{display:none;}}
+</style>
+
+<div class="app">
+  <div class="header">
+    <div><h1>Willawong Depot Canteen</h1><p>Cost &amp; revenue analysis</p></div>
+    <div class="header-week" id="cur-week-label"></div>
+  </div>
+
+  <div class="nav">
+    <button class="nav-btn active" onclick="showPage('dashboard',this)"><i class="ti ti-layout-dashboard"></i><span>Dashboard</span></button>
+    <button class="nav-btn" onclick="showPage('weekly',this)"><i class="ti ti-calendar-week"></i><span>Weekly input</span></button>
+    <button class="nav-btn" onclick="showPage('menu',this)"><i class="ti ti-calculator"></i><span>Menu cost</span></button>
+    <button class="nav-btn" onclick="showPage('history',this)"><i class="ti ti-history"></i><span>History</span></button>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="page active" id="page-dashboard">
+    <div class="metric-grid">
+      <div class="metric"><div class="ml">Weekly Revenue</div><div class="mv" id="d-revenue">$0</div></div>
+      <div class="metric"><div class="ml">Total Costs</div><div class="mv" style="color:#A32D2D;" id="d-costs">$0</div></div>
+      <div class="metric"><div class="ml">Net Profit</div><div class="mv" id="d-profit">$0</div></div>
+      <div class="metric"><div class="ml">Profit Margin</div><div class="mv" id="d-margin">0%</div></div>
+    </div>
+    <div class="grid2">
+      <div class="card"><div class="stitle">Cost breakdown</div><div id="cost-bars"></div></div>
+      <div class="card">
+        <div class="stitle">Cost % of revenue</div>
+        <div style="position:relative;height:200px;"><canvas id="pieChart"></canvas></div>
+        <div class="legend" id="pie-legend"></div>
+      </div>
+    </div>
+    <div class="card"><div class="stitle">Revenue by category (latest week)</div><div style="position:relative;height:180px;"><canvas id="revCatChart"></canvas></div></div>
+    <div class="card"><div class="stitle">Weekly profit trend (last 8 weeks)</div><div style="position:relative;height:160px;"><canvas id="trendChart"></canvas></div></div>
+  </div>
+
+  <!-- WEEKLY INPUT -->
+  <div class="page" id="page-weekly">
+    <div class="mode-tabs">
+      <button class="wm-tab active" id="tab-weekly-btn" onclick="switchMode('weekly',this)"><i class="ti ti-calendar-week"></i> Weekly summary</button>
+      <button class="wm-tab" id="tab-daily-btn" onclick="switchMode('daily',this)"><i class="ti ti-calendar-day"></i> Daily breakdown (Mon–Sat)</button>
+    </div>
+
+    <!-- WEEKLY MODE -->
+    <div id="mode-weekly">
+      <div class="grid2">
+        <div class="card">
+          <div class="stitle"><i class="ti ti-cash"></i> Revenue by category</div>
+          <div id="rev-inputs"></div>
+          <div class="irow" style="border-top:1px solid #e2e1dd;margin-top:6px;padding-top:10px;">
+            <label style="font-weight:700;">Total revenue</label>
+            <span id="w-total-rev" style="font-weight:700;font-size:15px;">$0</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="costs-header">
+            <div class="stitle" style="margin-bottom:0;"><i class="ti ti-receipt"></i> Costs</div>
+            <button class="btn-secondary" style="font-size:11px;padding:3px 8px;" onclick="openCostManager('weekly')"><i class="ti ti-settings"></i> Manage</button>
+          </div>
+          <div id="w-cost-rows"></div>
+          <div class="irow" style="border-top:1px solid #e2e1dd;margin-top:6px;padding-top:10px;">
+            <label style="font-weight:700;">Total costs</label>
+            <span id="w-total-cost" style="font-weight:700;font-size:15px;">$0</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DAILY MODE -->
+    <div id="mode-daily" style="display:none;">
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.85rem;flex-wrap:wrap;gap:8px;">
+          <div class="stitle" style="margin-bottom:0;"><i class="ti ti-cash"></i> Daily revenue by category</div>
+          <button class="btn-secondary" style="font-size:11px;padding:3px 8px;" onclick="clearDailyRev()"><i class="ti ti-refresh"></i> Clear revenue</button>
+        </div>
+        <div style="overflow-x:auto;"><table class="daily-table"><thead><tr id="daily-rev-head"></tr></thead><tbody id="daily-rev-body"></tbody></table></div>
+      </div>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.85rem;flex-wrap:wrap;gap:8px;">
+          <div class="stitle" style="margin-bottom:0;"><i class="ti ti-receipt"></i> Daily costs</div>
+          <div style="display:flex;gap:6px;">
+            <button class="btn-secondary" style="font-size:11px;padding:3px 8px;" onclick="openCostManager('daily')"><i class="ti ti-settings"></i> Manage items</button>
+            <button class="btn-secondary" style="font-size:11px;padding:3px 8px;" onclick="clearDailyCosts()"><i class="ti ti-refresh"></i> Clear costs</button>
+          </div>
+        </div>
+        <div style="overflow-x:auto;"><table class="daily-table"><thead><tr id="daily-cost-head"></tr></thead><tbody id="daily-cost-body"></tbody></table></div>
+      </div>
+      <div class="day-pills-row" id="day-pills"></div>
+    </div>
+
+    <!-- SUMMARY BAR -->
+    <div class="summary-bar">
+      <div class="summary-stats">
+        <div class="summary-stat"><div class="sl">Net profit</div><div class="sv" id="w-net">$0</div></div>
+        <div class="summary-stat"><div class="sl">Margin</div><div class="sv" id="w-margin-pct">0%</div></div>
+        <div class="summary-stat"><div class="sl">Food cost %</div><div class="sv" id="w-food-pct">0%</div></div>
+        <div class="summary-stat"><div class="sl">Labour %</div><div class="sv" id="w-labour-pct">0%</div></div>
+      </div>
+      <div class="summary-actions">
+        <label>Week of</label>
+        <input type="date" id="w-date">
+        <button class="btn-primary" onclick="saveWeek()"><i class="ti ti-device-floppy"></i> Save week</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MENU COST -->
+  <div class="page" id="page-menu">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.9rem;flex-wrap:wrap;gap:8px;">
+        <div class="stitle" style="margin-bottom:0;">Menu items &amp; cost calculator</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="btn-secondary" onclick="openCatManager()"><i class="ti ti-folder-cog"></i> Manage categories</button>
+          <button class="btn-primary" onclick="openItemModal(-1)"><i class="ti ti-plus"></i> Add item</button>
+        </div>
+      </div>
+      <div class="tabs" id="cat-tabs"></div>
+      <table class="mtable">
+        <thead><tr>
+          <th style="width:24%">Item</th><th style="width:17%">Category</th>
+          <th style="width:10%;text-align:right;">Price</th><th style="width:14%;text-align:right;">Ingredient cost</th>
+          <th style="width:11%;text-align:right;">Margin</th><th style="width:10%;text-align:right;">Food cost %</th>
+          <th style="width:8%;text-align:center;">Rating</th><th style="width:6%;"></th>
+        </tr></thead>
+        <tbody id="menu-tbody"></tbody>
+      </table>
+      <div style="margin-top:1rem;padding-top:0.75rem;border-top:1px solid #f0efeb;">
+        <div style="font-size:11px;color:#999;margin-bottom:4px;">Food cost % benchmark: <span style="color:#27500A;font-weight:700;">Good &lt;28%</span> &nbsp;<span style="color:#633806;font-weight:700;">OK 28–35%</span> &nbsp;<span style="color:#791F1F;font-weight:700;">High &gt;35%</span></div>
+        <div style="font-size:11px;color:#999;">Average food cost %: <span id="avg-food-cost" style="font-weight:700;color:#333;">—</span></div>
+      </div>
+    </div>
+    <div class="card"><div class="stitle">Food cost % by item</div><div style="position:relative;height:260px;" id="menuChartWrap"><canvas id="menuChart"></canvas></div></div>
+  </div>
+
+  <!-- HISTORY -->
+  <div class="page" id="page-history">
+    <div class="card"><div class="stitle">Weekly history</div><div id="history-container"><div style="font-size:13px;color:#999;padding:1rem 0;">No weeks saved yet.</div></div></div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div id="modal-overlay" class="modal-overlay" style="display:none;">
+  <div class="modal"><h3 id="modal-title"></h3><div id="modal-body"></div><div class="modal-btns" id="modal-btns"></div></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const DAYS=['Mon','Tue','Wed','Thu','Fri','Sat'];
+const DEFAULT_ITEMS=[
+  {name:'Sausage roll',cat:'Pies & Rolls',price:5,cost:0},{name:'Meat pie',cat:'Pies & Rolls',price:5,cost:0},
+  {name:'Mandu',cat:'Pies & Rolls',price:5,cost:0},{name:'Spring roll',cat:'Pies & Rolls',price:5,cost:0},
+  {name:'Ham & cheese toastie',cat:'Sandwiches & Toasties',price:5,cost:0},{name:'Ham & cheese croissant',cat:'Sandwiches & Toasties',price:5,cost:0},
+  {name:'BLT',cat:'Sandwiches & Toasties',price:5,cost:0},{name:'Hot dog',cat:'Sandwiches & Toasties',price:5,cost:0},
+  {name:'Pepperoni melt',cat:'Sandwiches & Toasties',price:5,cost:0},{name:'BBQ chicken melt',cat:'Sandwiches & Toasties',price:5,cost:0},
+  {name:'Bacon & egg roll',cat:'Burgers & Wraps',price:5,cost:0},{name:'Peri chicken wrap',cat:'Burgers & Wraps',price:5,cost:0},
+  {name:'Brekkie burger',cat:'Burgers & Wraps',price:5,cost:0},{name:'Chicken schnitzel burger',cat:'Burgers & Wraps',price:5,cost:0},
+  {name:'Beef bulgogi burger',cat:'Burgers & Wraps',price:5,cost:0},
+  {name:'Stir-fried noodle',cat:'Asian Favourites',price:5,cost:0},{name:'Soy garlic chicken rice bowl',cat:'Asian Favourites',price:5,cost:0},
+  {name:'Beef bulgogi rice bowl',cat:'Asian Favourites',price:5,cost:0},
+  {name:'Brownie bites',cat:'Bakery',price:5,cost:0},{name:'Muffins',cat:'Bakery',price:5,cost:0},
+  {name:'Banana bread',cat:'Bakery',price:5,cost:0},{name:'Almond croissant',cat:'Bakery',price:5,cost:0},
+  {name:'Lamington',cat:'Bakery',price:5,cost:0},{name:'Coffee (avg)',cat:'Drinks',price:5,cost:0},
+];
+const DEFAULT_CATS=['Pies & Rolls','Sandwiches & Toasties','Burgers & Wraps','Asian Favourites','Bakery','Drinks'];
+
+// Cost items: {id, label}
+const DEFAULT_COST_ITEMS=[
+  {id:'cogs',label:'Ingredients / COGS'},
+  {id:'labour',label:'Labour (wages)'},
+  {id:'rent',label:'Rent / site fee'},
+  {id:'packaging',label:'Packaging & supplies'},
+  {id:'utilities',label:'Utilities'},
+  {id:'fuel_lena',label:'Fuel - Lena'},
+  {id:'fuel_jy',label:'Fuel - JY'},
+  {id:'other',label:'Other'},
+];
+
+const CAT_COLORS=['#378ADD','#1D9E75','#E8B84B','#D85A30','#7F77DD','#D4537E','#63B3ED','#68D391','#F6AD55','#FC8181','#94A3B8','#F472B6'];
+
+let menuItems=JSON.parse(localStorage.getItem('wdc_items5')||'null')||DEFAULT_ITEMS.map(x=>({...x}));
+let categories=JSON.parse(localStorage.getItem('wdc_cats5')||'null')||[...DEFAULT_CATS];
+let weekData=JSON.parse(localStorage.getItem('wdc_weeks7')||'[]');
+let costItems=JSON.parse(localStorage.getItem('wdc_costItems')||'null')||DEFAULT_COST_ITEMS.map(x=>({...x}));
+let activeCat='All';
+let currentMode='weekly';
+let pieChart,trendChart,menuChart,revCatChart;
+
+// dailyRev[dayIdx][cat]=amt  dailyCosts[dayIdx][costId]=amt
+let dailyRev=DAYS.map(()=>({}));
+let dailyCosts=DAYS.map(()=>({}));
+
+function persist(){localStorage.setItem('wdc_items5',JSON.stringify(menuItems));localStorage.setItem('wdc_cats5',JSON.stringify(categories));}
+function persistCosts(){localStorage.setItem('wdc_costItems',JSON.stringify(costItems));}
+function persistW(){localStorage.setItem('wdc_weeks7',JSON.stringify(weekData));}
+function fmt(n){return'$'+Math.round(n).toLocaleString();}
+function fmtP(n){return(Math.round(n*10)/10)+'%';}
+function catClr(i){return CAT_COLORS[i%CAT_COLORS.length];}
+function catClrByName(n){return catClr(categories.indexOf(n));}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function uid(){return'c'+Math.random().toString(36).slice(2,8);}
+function showToast(msg){const t=document.createElement('div');t.className='toast';t.innerHTML=`<i class="ti ti-check"></i>${msg}`;document.body.appendChild(t);setTimeout(()=>t.remove(),2500);}
+
+function showModal(title,body,btns){
+  document.getElementById('modal-title').textContent=title;
+  document.getElementById('modal-body').innerHTML=body;
+  document.getElementById('modal-btns').innerHTML=btns;
+  document.getElementById('modal-overlay').style.display='flex';
+}
+function closeModal(){document.getElementById('modal-overlay').style.display='none';}
+document.getElementById('modal-overlay').addEventListener('click',e=>{if(e.target===document.getElementById('modal-overlay'))closeModal();});
+
+/* ── NAV ── */
+function showPage(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  if(btn)btn.classList.add('active');
+  if(id==='dashboard')renderDashboard();
+  if(id==='history')renderHistory();
+  if(id==='menu'){buildCatTabs();buildMenuTable();}
+  if(id==='weekly'){buildRevInputs();buildWeeklyCostRows();buildDailyTables();}
+}
+
+/* ── MODE SWITCHER ── */
+function switchMode(mode,btn){
+  currentMode=mode;
+  document.querySelectorAll('.wm-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('mode-weekly').style.display=mode==='weekly'?'':'none';
+  document.getElementById('mode-daily').style.display=mode==='daily'?'':'none';
+  if(mode==='daily') buildDailyTables();
+  calcSummary();
+}
+
+/* ─────────── WEEKLY SUMMARY MODE ─────────── */
+function buildRevInputs(){
+  const saved=weekData.length?(weekData[weekData.length-1].revByCat||{}):{};
+  document.getElementById('rev-inputs').innerHTML=categories.map((cat,i)=>`
+    <div class="irow">
+      <label><span style="width:8px;height:8px;border-radius:50%;background:${catClr(i)};flex-shrink:0;display:inline-block;"></span>${esc(cat)}</label>
+      <input type="number" id="wrev-${i}" placeholder="0" value="${saved[cat]||''}" oninput="calcWeekly()">
+    </div>`).join('');
+  calcWeekly();
+}
+
+function buildWeeklyCostRows(){
+  const saved=weekData.length?(weekData[weekData.length-1].costs||{}):{};
+  document.getElementById('w-cost-rows').innerHTML=costItems.map(ci=>`
+    <div class="irow">
+      <label>${esc(ci.label)}</label>
+      <input type="number" id="wcost-${ci.id}" placeholder="0" value="${saved[ci.id]||''}" oninput="calcWeekly()">
+    </div>`).join('');
+  calcWeekly();
+}
+
+function getWeeklyRevValues(){
+  const obj={};
+  categories.forEach((cat,i)=>{const el=document.getElementById('wrev-'+i);obj[cat]=el?parseFloat(el.value)||0:0;});
+  return obj;
+}
+function getWeeklyCostValues(){
+  const obj={};
+  costItems.forEach(ci=>{const el=document.getElementById('wcost-'+ci.id);obj[ci.id]=el?parseFloat(el.value)||0:0;});
+  return obj;
+}
+function calcWeekly(){
+  if(currentMode!=='weekly') return;
+  const rev=Object.values(getWeeklyRevValues()).reduce((a,b)=>a+b,0);
+  const costs=getWeeklyCostValues();
+  const totalCost=Object.values(costs).reduce((a,b)=>a+b,0);
+  const cogsId=costItems.find(c=>c.id==='cogs')?.id||costItems[0]?.id;
+  const labourId=costItems.find(c=>c.id==='labour')?.id;
+  document.getElementById('w-total-rev').textContent=fmt(rev);
+  document.getElementById('w-total-cost').textContent=fmt(totalCost);
+  updateSummaryUI(rev,totalCost,costs[cogsId]||0,costs[labourId]||0);
+}
+
+/* ─────────── DAILY MODE ─────────── */
+function buildDailyTables(){
+  buildDailyRevTable();
+  buildDailyCostTable();
+  updateDayPills();
+}
+
+function buildDailyRevTable(){
+  const head=document.getElementById('daily-rev-head');
+  const body=document.getElementById('daily-rev-body');
+  head.innerHTML=`<th>Category</th>${DAYS.map(d=>`<th>${d}</th>`).join('')}<th>Total</th>`;
+  body.innerHTML=categories.map((cat,ci)=>`
+    <tr>
+      <td><span style="display:inline-flex;align-items:center;gap:5px;"><span style="width:8px;height:8px;border-radius:50%;background:${catClr(ci)};display:inline-block;"></span>${esc(cat)}</span></td>
+      ${DAYS.map((d,di)=>`<td><input type="number" id="drev-${ci}-${di}" placeholder="0" value="${dailyRev[di][cat]||''}" oninput="onDailyRevInput(${ci},${di})"></td>`).join('')}
+      <td id="drow-rev-${ci}" style="font-weight:700;">$0</td>
+    </tr>`).join('')+
+    `<tr class="total-row">
+      <td>Daily total</td>
+      ${DAYS.map((_,di)=>`<td id="dcol-rev-${di}">$0</td>`).join('')}
+      <td id="dgrand-rev">$0</td>
+    </tr>`;
+  updateDailyRevTotals();
+}
+
+function buildDailyCostTable(){
+  const head=document.getElementById('daily-cost-head');
+  const body=document.getElementById('daily-cost-body');
+  head.innerHTML=`<th>Cost item</th>${DAYS.map(d=>`<th>${d}</th>`).join('')}<th>Total</th>`;
+  body.innerHTML=costItems.map((ci,ri)=>`
+    <tr>
+      <td>${esc(ci.label)}</td>
+      ${DAYS.map((d,di)=>`<td><input type="number" id="dcost-${ri}-${di}" placeholder="0" value="${dailyCosts[di][ci.id]||''}" oninput="onDailyCostInput(${ri},${di})"></td>`).join('')}
+      <td id="drow-cost-${ri}" style="font-weight:700;">$0</td>
+    </tr>`).join('')+
+    `<tr class="total-row">
+      <td>Daily total</td>
+      ${DAYS.map((_,di)=>`<td id="dcol-cost-${di}">$0</td>`).join('')}
+      <td id="dgrand-cost">$0</td>
+    </tr>`;
+  updateDailyCostTotals();
+}
+
+function onDailyRevInput(ci,di){
+  const cat=categories[ci];
+  dailyRev[di][cat]=parseFloat(document.getElementById(`drev-${ci}-${di}`).value)||0;
+  updateDailyRevTotals();calcDaily();
+}
+function onDailyCostInput(ri,di){
+  const cid=costItems[ri].id;
+  dailyCosts[di][cid]=parseFloat(document.getElementById(`dcost-${ri}-${di}`).value)||0;
+  updateDailyCostTotals();calcDaily();
+}
+
+function updateDailyRevTotals(){
+  let grand=0;
+  categories.forEach((cat,ci)=>{
+    let row=DAYS.reduce((s,_,di)=>s+(dailyRev[di][cat]||0),0);
+    const el=document.getElementById(`drow-rev-${ci}`);if(el)el.textContent=fmt(row);
+  });
+  DAYS.forEach((_,di)=>{
+    let col=categories.reduce((s,cat)=>s+(dailyRev[di][cat]||0),0);
+    grand+=col;
+    const el=document.getElementById(`dcol-rev-${di}`);if(el)el.textContent=fmt(col);
+  });
+  const gt=document.getElementById('dgrand-rev');if(gt)gt.textContent=fmt(grand);
+}
+function updateDailyCostTotals(){
+  let grand=0;
+  costItems.forEach((ci,ri)=>{
+    let row=DAYS.reduce((s,_,di)=>s+(dailyCosts[di][ci.id]||0),0);
+    const el=document.getElementById(`drow-cost-${ri}`);if(el)el.textContent=fmt(row);
+  });
+  DAYS.forEach((_,di)=>{
+    let col=costItems.reduce((s,ci)=>s+(dailyCosts[di][ci.id]||0),0);
+    grand+=col;
+    const el=document.getElementById(`dcol-cost-${di}`);if(el)el.textContent=fmt(col);
+  });
+  const gt=document.getElementById('dgrand-cost');if(gt)gt.textContent=fmt(grand);
+  updateDayPills();
+}
+
+function calcDaily(){
+  if(currentMode!=='daily') return;
+  const rev=DAYS.reduce((s,_,di)=>s+categories.reduce((ss,cat)=>ss+(dailyRev[di][cat]||0),0),0);
+  const totalCost=DAYS.reduce((s,_,di)=>s+costItems.reduce((ss,ci)=>ss+(dailyCosts[di][ci.id]||0),0),0);
+  const cogsId=costItems.find(c=>c.id==='cogs')?.id||costItems[0]?.id||'';
+  const labourId=costItems.find(c=>c.id==='labour')?.id||'';
+  const weeklyCogsTotal=DAYS.reduce((s,_,di)=>s+(dailyCosts[di][cogsId]||0),0);
+  const weeklyLabourTotal=DAYS.reduce((s,_,di)=>s+(dailyCosts[di][labourId]||0),0);
+  document.getElementById('w-total-rev').textContent=fmt(rev);
+  document.getElementById('w-total-cost').textContent=fmt(totalCost);
+  updateSummaryUI(rev,totalCost,weeklyCogsTotal,weeklyLabourTotal);
+  updateDayPills();
+}
+
+function updateDayPills(){
+  const el=document.getElementById('day-pills');
+  if(!el) return;
+  el.innerHTML=DAYS.map((day,di)=>{
+    const dayRev=categories.reduce((s,cat)=>s+(dailyRev[di][cat]||0),0);
+    const dayCost=costItems.reduce((s,ci)=>s+(dailyCosts[di][ci.id]||0),0);
+    const dayProfit=dayRev-dayCost;
+    const pc=dayProfit>0?'#27500A':dayProfit<0?'#A32D2D':'#666';
+    return`<div class="day-pill">
+      <div class="dp-day">${day}</div>
+      <div class="dp-rev">${fmt(dayRev)}</div>
+      <div class="dp-profit" style="color:${pc};">${dayProfit>=0?'+':''}${fmt(dayProfit)}</div>
+    </div>`;
+  }).join('');
+}
+
+function clearDailyRev(){dailyRev=DAYS.map(()=>({}));buildDailyRevTable();calcDaily();}
+function clearDailyCosts(){dailyCosts=DAYS.map(()=>({}));buildDailyCostTable();calcDaily();}
+
+/* ── SHARED SUMMARY ── */
+function calcSummary(){if(currentMode==='weekly')calcWeekly();else calcDaily();}
+function updateSummaryUI(rev,totalCost,cogs,labour){
+  const profit=rev-totalCost,margin=rev>0?profit/rev*100:0;
+  const net=document.getElementById('w-net');net.textContent=fmt(profit);net.style.color=profit>=0?'#A8E6C8':'#FFB3B3';
+  const mp=document.getElementById('w-margin-pct');mp.textContent=fmtP(margin);mp.style.color=margin>=20?'#A8E6C8':margin>=10?'#FFD980':'#FFB3B3';
+  document.getElementById('w-food-pct').textContent=rev>0?fmtP(cogs/rev*100):'0%';
+  document.getElementById('w-labour-pct').textContent=rev>0?fmtP(labour/rev*100):'0%';
+}
+
+/* ── SAVE WEEK ── */
+function saveWeek(){
+  let revByCat={},rev=0,costsObj={};
+  const dateVal=document.getElementById('w-date').value||new Date().toISOString().slice(0,10);
+
+  if(currentMode==='weekly'){
+    revByCat=getWeeklyRevValues();
+    rev=Object.values(revByCat).reduce((a,b)=>a+b,0);
+    costsObj=getWeeklyCostValues();
+  } else {
+    categories.forEach(cat=>{revByCat[cat]=DAYS.reduce((s,_,di)=>s+(dailyRev[di][cat]||0),0);});
+    rev=Object.values(revByCat).reduce((a,b)=>a+b,0);
+    costItems.forEach(ci=>{costsObj[ci.id]=DAYS.reduce((s,_,di)=>s+(dailyCosts[di][ci.id]||0),0);});
+  }
+
+  const totalCost=Object.values(costsObj).reduce((a,b)=>a+b,0);
+  const dailySnap=currentMode==='daily'?DAYS.map((d,di)=>({
+    day:d,
+    rev:categories.reduce((s,cat)=>s+(dailyRev[di][cat]||0),0),
+    cost:costItems.reduce((s,ci)=>s+(dailyCosts[di][ci.id]||0),0),
+    revByCat:{...dailyRev[di]},costByItem:{...dailyCosts[di]}
+  })):null;
+
+  const entry={date:dateVal,costs:costsObj,revenue:rev,profit:rev-totalCost,revByCat,daily:dailySnap,costItemLabels:costItems.map(c=>({id:c.id,label:c.label}))};
+  const idx=weekData.findIndex(w=>w.date===dateVal);
+  if(idx>=0)weekData[idx]=entry;else weekData.push(entry);
+  weekData.sort((a,b)=>a.date.localeCompare(b.date));
+  persistW();renderDashboard();showToast('Week of '+dateVal+' saved!');
+}
+
+/* ── COST MANAGER ── */
+function openCostManager(mode){
+  showModal('Manage cost items', buildCostManagerHTML(mode), `<button class="bcancel" onclick="closeModal()">Close</button>`);
+}
+function buildCostManagerHTML(mode){
+  return`<div id="cost-list">${costItems.map((ci,i)=>`
+    <div class="cat-manage-row" id="costrow-${i}">
+      <i class="ti ti-grip-vertical" style="color:#ccc;cursor:grab;"></i>
+      <input class="cat-name-input" value="${esc(ci.label)}" onblur="renameCostItem(${i},this.value)" style="flex:1;">
+      <button class="btn-icon" onclick="confirmDeleteCostItem(${i})"><i class="ti ti-trash"></i></button>
+    </div>`).join('')}
+  </div>
+  <div id="cost-del-confirm"></div>
+  <div class="new-cat-row" style="margin-top:12px;">
+    <input type="text" id="new-cost-input" placeholder="New cost item name…" onkeydown="if(event.key==='Enter')addCostItem()">
+    <button class="btn-primary" onclick="addCostItem()" style="white-space:nowrap;"><i class="ti ti-plus"></i> Add</button>
+  </div>
+  <div id="cost-add-msg" class="err-msg"></div>
+  <div style="font-size:11px;color:#999;margin-top:8px;"><i class="ti ti-info-circle"></i> Changes apply immediately to both weekly and daily input.</div>`;
+}
+function renameCostItem(i,newLabel){
+  newLabel=newLabel.trim();if(!newLabel||newLabel===costItems[i].label)return;
+  costItems[i].label=newLabel;persistCosts();
+  buildWeeklyCostRows();if(currentMode==='daily')buildDailyCostTable();
+}
+function confirmDeleteCostItem(i){
+  document.getElementById('cost-del-confirm').innerHTML=`<div class="confirm-bar" style="margin-top:8px;"><i class="ti ti-alert-triangle"></i><span>Delete <strong>${esc(costItems[i].label)}</strong>?</span><button class="cb-yes" onclick="doDeleteCostItem(${i})">Yes</button><button class="cb-no" onclick="document.getElementById('cost-del-confirm').innerHTML=''">Cancel</button></div>`;
+}
+function doDeleteCostItem(i){
+  costItems.splice(i,1);persistCosts();
+  buildWeeklyCostRows();if(currentMode==='daily')buildDailyCostTable();
+  document.getElementById('modal-body').innerHTML=buildCostManagerHTML();
+}
+function addCostItem(){
+  const inp=document.getElementById('new-cost-input'),msg=document.getElementById('cost-add-msg');
+  const label=(inp.value||'').trim();
+  if(!label){msg.textContent='Please enter a cost item name.';return;}
+  costItems.push({id:uid(),label});persistCosts();
+  inp.value='';msg.textContent='';
+  buildWeeklyCostRows();if(currentMode==='daily')buildDailyCostTable();
+  document.getElementById('modal-body').innerHTML=buildCostManagerHTML();
+}
+
+/* ── CAT MANAGER ── */
+function openCatManager(){
+  showModal('Manage categories',buildCatManagerHTML(),`<button class="bcancel" onclick="closeModal()">Close</button>`);
+}
+function buildCatManagerHTML(){
+  return`<div id="cat-list-inner">${categories.map((cat,i)=>`
+    <div class="cat-manage-row">
+      <span class="cat-dot" style="background:${catClr(i)};"></span>
+      <input class="cat-name-input" value="${esc(cat)}" onblur="renameCat(${i},this.value)">
+      <button class="btn-icon" onclick="confirmDeleteCat(${i})"><i class="ti ti-trash"></i></button>
+    </div>`).join('')}
+  <div id="cat-del-confirm"></div>
+  <div class="new-cat-row">
+    <input type="text" id="new-cat-input" placeholder="New category name…" onkeydown="if(event.key==='Enter')addCatInline()">
+    <button class="btn-primary" onclick="addCatInline()" style="white-space:nowrap;"><i class="ti ti-plus"></i> Add</button>
+  </div>
+  <div id="cat-add-msg" class="err-msg"></div>`;
+}
+function renameCat(i,newName){
+  newName=newName.trim();if(!newName||newName===categories[i])return;
+  const old=categories[i];categories[i]=newName;
+  menuItems.forEach(m=>{if(m.cat===old)m.cat=newName;});
+  dailyRev.forEach(d=>{if(d[old]!==undefined){d[newName]=d[old];delete d[old];}});
+  persist();buildCatTabs();buildMenuTable();
+  if(document.getElementById('page-weekly').classList.contains('active')){buildRevInputs();if(currentMode==='daily')buildDailyRevTable();}
+}
+function confirmDeleteCat(i){
+  const cat=categories[i],count=menuItems.filter(m=>m.cat===cat).length;
+  document.getElementById('cat-del-confirm').innerHTML=`<div class="confirm-bar" style="margin-top:8px;"><i class="ti ti-alert-triangle"></i><span>Delete <strong>${esc(cat)}</strong>${count>0?` + ${count} item(s)`:''}?</span><button class="cb-yes" onclick="doDeleteCat(${i})">Yes</button><button class="cb-no" onclick="document.getElementById('cat-del-confirm').innerHTML=''">Cancel</button></div>`;
+}
+function doDeleteCat(i){
+  const cat=categories[i];menuItems=menuItems.filter(m=>m.cat!==cat);categories.splice(i,1);
+  dailyRev.forEach(d=>delete d[cat]);persist();if(activeCat===cat)activeCat='All';
+  buildCatTabs();buildMenuTable();
+  if(document.getElementById('page-weekly').classList.contains('active')){buildRevInputs();if(currentMode==='daily')buildDailyRevTable();}
+  document.getElementById('modal-body').innerHTML=buildCatManagerHTML();
+}
+function addCatInline(){
+  const inp=document.getElementById('new-cat-input'),msg=document.getElementById('cat-add-msg');
+  const name=(inp.value||'').trim();
+  if(!name){msg.textContent='Please enter a category name.';return;}
+  if(categories.includes(name)){msg.textContent='Already exists.';return;}
+  categories.push(name);persist();inp.value='';msg.textContent='';
+  buildCatTabs();buildMenuTable();
+  if(document.getElementById('page-weekly').classList.contains('active')){buildRevInputs();if(currentMode==='daily')buildDailyRevTable();}
+  document.getElementById('modal-body').innerHTML=buildCatManagerHTML();
+}
+
+/* ── CAT TABS / MENU TABLE ── */
+function buildCatTabs(){
+  document.getElementById('cat-tabs').innerHTML=['All',...categories].map(c=>
+    `<button class="ctab${c===activeCat?' active':''}" onclick="filterCat(this,'${esc(c)}')">${esc(c)}</button>`
+  ).join('');
+}
+function filterCat(btn,c){activeCat=c;document.querySelectorAll('.ctab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');buildMenuTable();}
+
+function buildMenuTable(){
+  const tbody=document.getElementById('menu-tbody');
+  const rows=menuItems.map((item,i)=>({...item,_i:i})).filter(item=>activeCat==='All'||item.cat===activeCat);
+  if(!rows.length){tbody.innerHTML=`<tr><td colspan="8" style="padding:1rem;font-size:13px;color:#999;">No items in this category.</td></tr>`;updateAvg();renderMenuChart();return;}
+  tbody.innerHTML=rows.map(item=>{
+    const i=item._i,cost=item.cost||0,margin=item.price-cost,pct=cost>0?Math.round(cost/item.price*100):0;
+    const badge=cost===0?'<span class="badge bx">Enter cost</span>':pct<28?'<span class="badge bg">Good</span>':pct<=35?'<span class="badge bo">OK</span>':'<span class="badge br">High</span>';
+    const mc=cost>0?(margin>=0?'#27500A':'#A32D2D'):'#ccc';
+    const catOpts=categories.map(c=>`<option value="${esc(c)}"${c===item.cat?' selected':''}>${esc(c)}</option>`).join('');
+    return`<tr>
+      <td><input class="cinput" value="${esc(item.name)}" onchange="updateField(${i},'name',this.value)"></td>
+      <td><select class="cinput" onchange="updateField(${i},'cat',this.value)" style="font-size:12px;padding:2px 4px;">${catOpts}</select></td>
+      <td><input class="cinput num" type="number" step="0.5" value="${item.price}" onchange="updateField(${i},'price',parseFloat(this.value)||5)"></td>
+      <td><input class="cinput num" type="number" step="0.1" value="${cost||''}" placeholder="0.00" onchange="updateField(${i},'cost',parseFloat(this.value)||0)"></td>
+      <td style="text-align:right;font-weight:700;color:${mc};">${cost>0?fmt(margin):'—'}</td>
+      <td style="text-align:right;">${cost>0?fmtP(pct):'—'}</td>
+      <td style="text-align:center;">${badge}</td>
+      <td style="text-align:center;"><button class="btn-icon" onclick="confirmDeleteItem(${i},this)"><i class="ti ti-trash"></i></button></td>
+    </tr>`;
+  }).join('');
+  updateAvg();renderMenuChart();
+}
+function confirmDeleteItem(i,btn){
+  document.querySelectorAll('.confirm-bar-row').forEach(el=>el.remove());
+  const tr=btn.closest('tr');
+  const bar=document.createElement('tr');bar.className='confirm-bar-row';
+  bar.innerHTML=`<td colspan="8" style="padding:4px 0;"><div class="confirm-bar"><i class="ti ti-alert-triangle"></i><span>Delete <strong>${esc(menuItems[i].name)}</strong>?</span><button class="cb-yes" onclick="doDeleteItem(${i})">Yes, delete</button><button class="cb-no" onclick="this.closest('.confirm-bar-row').remove()">Cancel</button></div></td>`;
+  tr.after(bar);
+}
+function doDeleteItem(i){
+  menuItems.splice(i,1);persist();
+  if(activeCat!=='All'&&!menuItems.some(m=>m.cat===activeCat))activeCat='All';
+  buildCatTabs();buildMenuTable();
+}
+function updateField(i,field,val){menuItems[i][field]=val;persist();buildCatTabs();buildMenuTable();}
+function updateAvg(){
+  const filled=menuItems.filter(x=>x.cost>0);
+  const el=document.getElementById('avg-food-cost');
+  if(!filled.length){el.textContent='—';return;}
+  const avg=filled.reduce((s,x)=>s+x.cost/x.price*100,0)/filled.length;
+  el.textContent=fmtP(avg);el.style.color=avg<28?'#27500A':avg<=35?'#633806':'#791F1F';
+}
+function renderMenuChart(){
+  const filled=menuItems.filter(x=>x.cost>0);
+  const wrap=document.getElementById('menuChartWrap');
+  if(!filled.length){if(menuChart){menuChart.destroy();menuChart=null;}return;}
+  wrap.style.height=Math.max(240,filled.length*32+80)+'px';
+  const labels=filled.map(x=>x.name.length>22?x.name.slice(0,21)+'…':x.name);
+  const vals=filled.map(x=>Math.round(x.cost/x.price*100));
+  if(menuChart)menuChart.destroy();
+  menuChart=new Chart(document.getElementById('menuChart').getContext('2d'),{
+    type:'bar',data:{labels,datasets:[{data:vals,backgroundColor:vals.map(v=>v<28?'#1D9E75':v<=35?'#E8B84B':'#E24B4A'),borderRadius:3}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.raw}% food cost`}}},
+      scales:{x:{min:0,max:60,ticks:{callback:v=>v+'%'},grid:{color:'rgba(0,0,0,0.05)'}},y:{grid:{display:false},ticks:{font:{size:11}}}}}
+  });
+}
+
+function openItemModal(editIdx){
+  const isEdit=editIdx>=0;
+  const item=isEdit?menuItems[editIdx]:{name:'',cat:categories[0]||'',price:5,cost:0};
+  const catOpts=categories.map(c=>`<option value="${esc(c)}"${c===item.cat?' selected':''}>${esc(c)}</option>`).join('');
+  showModal(isEdit?'Edit item':'Add item',
+    `<div class="mfield"><label>Item name</label><input type="text" id="mi-name" value="${esc(item.name)}" placeholder="e.g. Chicken wrap"></div>
+     <div class="mfield"><label>Category</label><select id="mi-cat">${catOpts}</select></div>
+     <div class="mfield"><label>Sell price ($)</label><input type="number" id="mi-price" value="${item.price}" step="0.5" min="0"></div>
+     <div class="mfield"><label>Ingredient cost ($) <span style="font-weight:400;color:#999;">optional</span></label><input type="number" id="mi-cost" value="${item.cost||''}" step="0.1" min="0" placeholder="0.00"></div>
+     <div class="err-msg" id="item-err"></div>`,
+    `<button class="bcancel" onclick="closeModal()">Cancel</button><button class="bconfirm" onclick="submitItem(${editIdx})">${isEdit?'Save':'Add'}</button>`);
+  setTimeout(()=>{const el=document.getElementById('mi-name');if(el)el.focus();},50);
+}
+function submitItem(editIdx){
+  const name=(document.getElementById('mi-name').value||'').trim();
+  if(!name){document.getElementById('item-err').textContent='Item name is required.';return;}
+  const cat=document.getElementById('mi-cat').value;
+  const price=parseFloat(document.getElementById('mi-price').value)||5;
+  const cost=parseFloat(document.getElementById('mi-cost').value)||0;
+  if(editIdx>=0)menuItems[editIdx]={name,cat,price,cost};else menuItems.push({name,cat,price,cost});
+  persist();closeModal();activeCat=cat;buildCatTabs();buildMenuTable();
+}
+
+/* ── DASHBOARD ── */
+function renderDashboard(){
+  const latest=weekData.length?weekData[weekData.length-1]:null;
+  const COST_COLORS=['#378ADD','#1D9E75','#E8B84B','#D85A30','#7F77DD','#D4537E','#63B3ED','#68D391','#F6AD55','#FC8181'];
+  if(!latest){
+    ['d-revenue','d-costs','d-profit','d-margin'].forEach(id=>document.getElementById(id).textContent='$0');
+    document.getElementById('cost-bars').innerHTML='<div style="font-size:12px;color:#999;padding:1rem 0;">No data yet — add a week in Weekly input.</div>';return;
+  }
+  const costs=latest.costs||{};
+  const costLabels=latest.costItemLabels||costItems.map(c=>({id:c.id,label:c.label}));
+  const totalCost=Object.values(costs).reduce((a,b)=>a+b,0);
+  const margin=latest.revenue>0?latest.profit/latest.revenue*100:0;
+  document.getElementById('d-revenue').textContent=fmt(latest.revenue);
+  document.getElementById('d-costs').textContent=fmt(totalCost);
+  const dp=document.getElementById('d-profit');dp.textContent=fmt(latest.profit);dp.style.color=latest.profit>=0?'#27500A':'#A32D2D';
+  const dm=document.getElementById('d-margin');dm.textContent=fmtP(margin);dm.style.color=margin>=20?'#27500A':margin>=10?'#633806':'#A32D2D';
+
+  const costEntries=costLabels.map((cl,i)=>({label:cl.label,amt:costs[cl.id]||0,color:COST_COLORS[i%COST_COLORS.length]}));
+  document.getElementById('cost-bars').innerHTML=costEntries.map(ce=>{
+    const pct=latest.revenue>0?Math.round(ce.amt/latest.revenue*100):0;
+    const fill=totalCost>0?Math.round(ce.amt/totalCost*100):0;
+    return`<div class="bar-row"><div class="bar-label">${esc(ce.label)}</div><div class="bar-track"><div class="bar-fill" style="width:${fill}%;background:${ce.color};"></div></div><div class="bar-pct">${pct}%</div></div>`;
+  }).join('');
+
+  if(pieChart)pieChart.destroy();
+  pieChart=new Chart(document.getElementById('pieChart').getContext('2d'),{
+    type:'doughnut',
+    data:{labels:costEntries.map(c=>c.label),datasets:[{data:costEntries.map(c=>c.amt),backgroundColor:costEntries.map(c=>c.color),borderWidth:2,borderColor:'#fff'}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>{const p=latest.revenue>0?(c.raw/latest.revenue*100).toFixed(1):0;return` ${fmt(c.raw)} (${p}% of rev)`;}}}}},
+  });
+  document.getElementById('pie-legend').innerHTML=costEntries.map(ce=>`<span><span class="ldot" style="background:${ce.color};"></span>${esc(ce.label)}</span>`).join('');
+
+  const revByCat=latest.revByCat||{};
+  const catLbls=Object.keys(revByCat).filter(k=>revByCat[k]>0);
+  if(revCatChart)revCatChart.destroy();
+  if(catLbls.length){
+    revCatChart=new Chart(document.getElementById('revCatChart').getContext('2d'),{
+      type:'bar',data:{labels:catLbls,datasets:[{data:catLbls.map(k=>revByCat[k]),backgroundColor:catLbls.map(k=>catClrByName(k)),borderRadius:4}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${fmt(c.raw)}`}}},scales:{y:{ticks:{callback:v=>fmt(v)},grid:{color:'rgba(0,0,0,0.05)'}},x:{grid:{display:false},ticks:{font:{size:11},autoSkip:false,maxRotation:20}}}}
+    });
+  }
+  const last8=weekData.slice(-8);
+  if(trendChart)trendChart.destroy();
+  trendChart=new Chart(document.getElementById('trendChart').getContext('2d'),{
+    type:'bar',data:{labels:last8.map(w=>w.date.slice(5)),datasets:[{data:last8.map(w=>w.profit),backgroundColor:last8.map(w=>w.profit>=0?'#1D9E75':'#E24B4A'),borderRadius:4}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>fmt(v)},grid:{color:'rgba(0,0,0,0.05)'}},x:{grid:{display:false},ticks:{autoSkip:false,maxRotation:0}}}}
+  });
+}
+
+/* ── HISTORY ── */
+function renderHistory(){
+  const c=document.getElementById('history-container');
+  if(!weekData.length){c.innerHTML='<div style="font-size:13px;color:#999;padding:1rem 0;">No weeks saved yet.</div>';return;}
+  const rows=weekData.slice().reverse().map(w=>{
+    const costs=w.costs||{};
+    const totalCost=Object.values(costs).reduce((a,b)=>a+b,0);
+    const margin=w.revenue>0?(w.profit/w.revenue*100):0;
+    const revDetail=w.revByCat?Object.entries(w.revByCat).filter(([,v])=>v>0).map(([k,v])=>`${esc(k)}: ${fmt(v)}`).join(' · '):'';
+    const dailyDetail=w.daily?`<br><span style="font-size:10px;color:#999;">Daily: ${w.daily.map(d=>`${d.day} rev:${fmt(d.rev)} cost:${fmt(d.cost)}`).join(' · ')}</span>`:'';
+    const cogsId=costItems.find(c=>c.id==='cogs')?.id||'cogs';
+    const labourId=costItems.find(c=>c.id==='labour')?.id||'labour';
+    return`<tr>
+      <td style="text-align:left;">${w.date}${revDetail?`<br><span style="font-size:10px;color:#999;">${revDetail}</span>`:''}${dailyDetail}</td>
+      <td>${fmt(w.revenue)}</td><td>${fmt(costs[cogsId]||0)}</td><td>${fmt(costs[labourId]||0)}</td><td>${fmt(totalCost)}</td>
+      <td style="font-weight:700;color:${w.profit>=0?'#27500A':'#791F1F'};">${fmt(w.profit)}</td>
+      <td style="font-weight:700;color:${margin>=20?'#27500A':margin>=10?'#633806':'#791F1F'};">${fmtP(margin)}</td>
+      <td><button onclick="confirmDeleteWeek('${w.date}',this)" style="font-size:11px;padding:3px 9px;border:1px solid #d4d3cf;border-radius:6px;background:none;color:#666;cursor:pointer;">Delete</button></td>
+    </tr>`;
+  }).join('');
+  c.innerHTML=`<table class="htable"><thead><tr><th style="text-align:left;">Week</th><th>Revenue</th><th>Ingredients</th><th>Labour</th><th>Total cost</th><th>Net profit</th><th>Margin</th><th></th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+function confirmDeleteWeek(date,btn){
+  document.querySelectorAll('.week-del-bar').forEach(el=>el.remove());
+  const tr=btn.closest('tr');
+  const bar=document.createElement('tr');bar.className='week-del-bar';
+  bar.innerHTML=`<td colspan="8" style="padding:4px 0;"><div class="confirm-bar"><i class="ti ti-alert-triangle"></i><span>Delete week of <strong>${date}</strong>?</span><button class="cb-yes" onclick="doDeleteWeek('${date}')">Yes, delete</button><button class="cb-no" onclick="this.closest('.week-del-bar').remove()">Cancel</button></div></td>`;
+  tr.after(bar);
+}
+function doDeleteWeek(date){weekData=weekData.filter(w=>w.date!==date);persistW();renderHistory();}
+
+/* ── INIT ── */
+const today=new Date().toISOString().slice(0,10);
+document.getElementById('w-date').value=today;
+document.getElementById('cur-week-label').textContent='Week of '+today;
+buildRevInputs();
+buildWeeklyCostRows();
+renderDashboard();
+</script>
